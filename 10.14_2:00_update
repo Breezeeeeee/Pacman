@@ -1,0 +1,34 @@
+1.
+features['stop']=1 删除
+
+        if action == 'Stop' :
+            try:
+                x = min([self.distancer.getDistance(i.getPosition(), gameState.getAgentState(self.index).getPosition())
+                         for i in invaders])
+                if x != 2:
+                    return self.stopAction()
+            except:
+                return self.stopAction()
+        用来判断stop action
+2.scareTimes
+    def getScareTime(self,gameState):
+        myPos= gameState.getAgentState(self.index).getPosition()
+        enemies = [gameState.getAgentState(i) for i in self.getOpponents(gameState)]
+        invaders = [a for a in enemies if not a.isPacman and a.getPosition() != None]
+        minDistance=400
+
+
+        try:
+            for i in self.getOpponents(gameState):
+                if not gameState.getAgentState(i).isPacman:
+                    if self.distancer.getDistance(gameState.getAgentState(i).getPosition(), myPos) < minDistance:
+                        minDistance = self.distancer.getDistance(i.getPosition(), myPos)
+                        ghostIndex = i
+            return  gameState.getAgentState(ghostIndex).scaredTimer
+        except:
+            return 99
+    仅获得最近的ghost的scare time
+    
+3.两个agent的distanceToCapsule在发现对方ghost的时候都会比distanceToFood权重高(但是这样会造成一旦发现对方ghost，我们pacman会不吃1food直接吃capsule，这样效率会降低)
+
+更新：所有distanceoapsule都是权重为-1，但是当ghost距离我们小于6是，变为5*distance以增加其权重
